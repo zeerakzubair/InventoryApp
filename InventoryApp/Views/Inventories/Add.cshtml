@@ -1,0 +1,24 @@
+﻿@model InventoryApp.Models.AddInventoryViewModel
+@{
+}
+<h2>Add Inventory Item</h2>
+<form method="post" action="Add" class="mt-5">
+    <div class="mb-3">
+        <label for="" class="form-label">Name</label>
+        <input type="text" class="form-control" asp-for="Name">
+    </div>
+    <div class="mb-3">
+        <label for="" class="form-label">Description</label>
+        <input type="text" class="form-control" asp-for="Description">
+    </div>
+    <div class="mb-3">
+        <label for="" class="form-label">Price</label>
+        <input type="number" class="form-control" asp-for="Price">
+    </div>
+    <div class="mb-3">
+        <label for="" class="form-label">Stock</label>
+        <input type="number" class="form-control" asp-for="StockQuantity">
+    </div>
+        
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>

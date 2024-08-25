@@ -1,0 +1,34 @@
+﻿@model List<InventoryApp.Models.SalesOrderViewModel>
+@{
+}
+
+<h2>Sales Orders</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Sales Order Id</th>
+            <th>Item Id</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Item Price</th>
+            <th>Quantity</th>
+            <th>Total Price</th>
+            <th>Created Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.SalesOrderId</td>
+                <td>@item.InventoryItemId</td>
+                <td>@item.InventoryItemName</td>
+                <td>@item.InventoryItemDescription</td>
+                <td>@item.InventoryItemPrice</td>
+                <td>@item.Quantity</td>
+                <td>@item.TotalPrice</td>
+                <td>@item.CreatedDate.ToString("dd-MM-yyyy")</td>
+            </tr>
+        }
+    </tbody>
+</table>

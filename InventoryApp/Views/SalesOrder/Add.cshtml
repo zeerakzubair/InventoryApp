@@ -1,0 +1,18 @@
+﻿@model InventoryApp.Models.AddSalesOrderViewModel
+@{
+}
+
+<h2>Add Sales Order</h2>
+<form method="post" action="Add" class="mt-5">
+    <div class="mb-3">
+        <label for="" class="form-label">Item Id</label>
+        <select asp-for="ItemId" asp-items="Model.Items" class="form-control">
+            <option value="">Select an item</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label for="" class="form-label">Quantity</label>
+        <input type="number" class="form-control" asp-for="Quantity">
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>

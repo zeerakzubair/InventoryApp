@@ -1,0 +1,60 @@
+﻿@model List<InventoryApp.Models.Domain.Inventory>
+@{
+}
+<h2>Inventory</h2>
+<style>
+    .low-stock {
+        background-color: red;
+        color: white;
+    }
+</style>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Price</th>
+            <th>Date Added</th>
+            <th>Stock</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr class="stock-row" data-stock="@item.StockQuantity">
+                <td>@item.Id</td>
+                <td>@item.Name</td>
+                <td>@item.Description</td>
+                <td>@item.Price</td>
+                <td>@item.DateAdded.ToString("dd-MM-yyyy")</td>
+                <td>@item.StockQuantity</td>
+                <td>
+                    <a href="Inventories/Edit/@item.Id" title="Edit">
+                        <i class="fa fa-edit"></i>
+                    </a>
+                </td>
+                <td>
+                    <a href="Inventories/Delete/@item.Id" title="Delete">
+                        <i class="fa fa-trash"></i>
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var rows = document.querySelectorAll(".stock-row");
+
+        rows.forEach(function (row) {
+            var stockValue = parseInt(row.getAttribute("data-stock"));
+
+            if (stockValue < 5) {
+                row.classList.add("low-stock");
+            }
+        });
+    });
+</script>
