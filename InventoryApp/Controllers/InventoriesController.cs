@@ -32,12 +32,18 @@ namespace InventoryApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Add(AddInventoryViewModel viewModel)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(viewModel);
+            }
+
             if (await isNameDuplicate(viewModel.Name))
             {
-                return View("Error", new ErrorViewModel() { ControllerName = "InventoriesController", ActionName = "Add", ErrorMessage = "Name of inventory item cannot be duplicate." });
-
+                ModelState.AddModelError("Name", "Name of inventory item cannot be duplicate.");
+                return View(viewModel);
             }
-            else
+
+            try
             {
                 var inventory = new Inventory()
                 {
@@ -52,20 +58,37 @@ namespace InventoryApp.Controllers
                 await inventoryAppDbContext.Inventories.AddAsync(inventory);
                 await inventoryAppDbContext.SaveChangesAsync();
 
-                return RedirectToAction("Index");
+                TempData["SuccessMessage"] = "Inventory item added succefully.";
 
             }
-            
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"An error occured; {ex.Message} ";
+            }
+
+
+            return RedirectToAction("Index");
 
         }
 
         public async Task<IActionResult> Delete(Guid Id)
         {
-            var inventoryItem = await inventoryAppDbContext.Inventories.FindAsync(Id);
-            if (inventoryItem != null)
+            try
             {
-                inventoryAppDbContext.Inventories.Remove(inventoryItem);
-                await inventoryAppDbContext.SaveChangesAsync();
+                var inventoryItem = await inventoryAppDbContext.Inventories.FindAsync(Id);
+                if (inventoryItem != null)
+                {
+
+                    inventoryAppDbContext.Inventories.Remove(inventoryItem);
+                    await inventoryAppDbContext.SaveChangesAsync();
+
+                    TempData["DeleteMessage"] = "Inventory item deleted successfully.";
+
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"An error occured; {ex.Message} ";
             }
             return RedirectToAction("Index");
         }
@@ -73,50 +96,70 @@ namespace InventoryApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(Guid Id)
         {
-            var inventoryItem = await inventoryAppDbContext.Inventories.FindAsync(Id);
-            if (inventoryItem != null)
+            try
             {
-                var updateInventoryModel = new UpdateInventoryViewModel()
+                var inventoryItem = await inventoryAppDbContext.Inventories.FindAsync(Id);
+                if (inventoryItem != null)
                 {
-                    Id = inventoryItem.Id,
-                    Name = inventoryItem.Name,
-                    Description = inventoryItem.Description,
-                    Price = inventoryItem.Price,
-                    StockQuantity = inventoryItem.StockQuantity,
-                };
+                    var updateInventoryModel = new UpdateInventoryViewModel()
+                    {
+                        Id = inventoryItem.Id,
+                        Name = inventoryItem.Name,
+                        Description = inventoryItem.Description,
+                        Price = inventoryItem.Price,
+                        StockQuantity = inventoryItem.StockQuantity,
+                    };
 
-
-                return View(updateInventoryModel);
+                    return View(updateInventoryModel);
+                }
             }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"An error occured; {ex.Message} ";
+            }
+
             return RedirectToAction("Index");
         }
 
         [HttpPost]
         public async Task<IActionResult> Edit(UpdateInventoryViewModel updateModel)
         {
-            var inventoryInDb = await inventoryAppDbContext.Inventories.FindAsync(updateModel.Id);
-
-            if (inventoryInDb != null)
+            if (!ModelState.IsValid)
             {
-                //here the duplicate name check should only be made when the new name is different from the previous name
-                if ((updateModel.Name != inventoryInDb.Name) && (await isNameDuplicate(updateModel.Name)))
-                {
-                    return View("Error", new ErrorViewModel() {ControllerName= "InventoriesController", ActionName= "Edit", ErrorMessage = "Name of inventory item cannot be duplicate."});
+                return View(updateModel);
+            }
 
-                }
-                else
+            try
+            {
+                var inventoryInDb = await inventoryAppDbContext.Inventories.FindAsync(updateModel.Id);
+
+                if (inventoryInDb != null)
                 {
+                    //here the duplicate name check should only be made when the new name is different from the previous name
+                    if ((updateModel.Name != inventoryInDb.Name) && (await isNameDuplicate(updateModel.Name)))
+                    {
+                        ModelState.AddModelError("Name", "Name of inventory item cannot be duplicate.");
+                        return View(updateModel);
+                    }
+
                     inventoryInDb.Name = updateModel.Name;
                     inventoryInDb.Description = updateModel.Description;
                     inventoryInDb.Price = updateModel.Price;
                     inventoryInDb.StockQuantity = updateModel.StockQuantity;
 
                     await inventoryAppDbContext.SaveChangesAsync();
+
+                    TempData["SuccessMessage"] = "Inventory item updated successfully.";
+
                 }
-         
+
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"An error occured; {ex.Message} ";
             }
 
-            return RedirectToAction("Index");          
+            return RedirectToAction("Index");
 
         }
 
@@ -129,9 +172,9 @@ namespace InventoryApp.Controllers
         private async Task<bool> isNameDuplicate(string name)
         {
 
-            var inventory = await inventoryAppDbContext.Inventories.FirstOrDefaultAsync(x=>x.Name == name);
+            var inventory = await inventoryAppDbContext.Inventories.FirstOrDefaultAsync(x => x.Name == name);
 
-            if(inventory != null)
+            if (inventory != null)
             {
                 return true;
             }

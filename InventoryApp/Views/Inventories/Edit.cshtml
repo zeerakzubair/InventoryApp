@@ -2,27 +2,38 @@
 @{
 }
 <h2>Update Inventory Item</h2>
-<form method="post" action="Edit" class="mt-5">
+<form method="post" asp-action="Edit" class="mt-5">
     <div class="mb-3">
-        <label for="" class="form-label">Id</label>
+        <label for="Id" class="form-label">Id</label>
         <input type="text" class="form-control" asp-for="Id" readonly>
+        <span asp-validation-for="Id" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label for="" class="form-label">Name</label>
-        <input type="text" class="form-control" asp-for="Name">
+        <label for="Name" class="form-label">Name</label>
+        <input type="text" class="form-control" asp-for="Name" required>
+        <span asp-validation-for="Name" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label for="" class="form-label">Description</label>
+        <label for="Description" class="form-label">Description</label>
         <input type="text" class="form-control" asp-for="Description">
+        <span asp-validation-for="Description" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label for="" class="form-label">Price</label>
-        <input type="number" class="form-control" asp-for="Price">
+        <label for="Price" class="form-label">Price</label>
+        <input type="number" class="form-control" asp-for="Price" step="1" required min="0">
+        <span asp-validation-for="Price" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label for="" class="form-label">Stock</label>
-        <input type="number" class="form-control" asp-for="StockQuantity">
+        <label for="StockQuantity" class="form-label">Stock</label>
+        <input type="number" class="form-control" asp-for="StockQuantity" required min="0">
+        <span asp-validation-for="StockQuantity" class="text-danger"></span>
     </div>
 
     <button type="submit" class="btn btn-primary">Update</button>
 </form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -32,3 +32,25 @@
         }
     </tbody>
 </table>
+
+@if (TempData["SuccessMessage"] != null || TempData["DeleteMessage"] != null || TempData["ErrorMessage"] != null)
+{
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Check for and display any TempData messages
+            var successMessage = '@TempData["SuccessMessage"]';
+            var deleteMessage = '@TempData["DeleteMessage"]';
+            var errorMessage = '@TempData["ErrorMessage"]';
+
+            if (successMessage) {
+                alert(successMessage);
+            }
+            if (deleteMessage) {
+                alert(deleteMessage);
+            }
+            if (errorMessage) {
+                alert(errorMessage);
+            }
+        });
+    </script>
+}

@@ -6,18 +6,19 @@
     .low-stock {
         background-color: red;
         color: white;
+        font-weight: bold;
     }
 </style>
 <table class="table">
     <thead>
         <tr>
-            <th>Id</th>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Price</th>
-            <th>Date Added</th>
-            <th>Stock</th>
-            <th>Actions</th>
+            <th scope="col">Id</th>
+            <th scope="col">Name</th>
+            <th scope="col">Description</th>
+            <th scope="col">Price</th>
+            <th scope="col">Date Added</th>
+            <th scope="col">Stock</th>
+            <th scope="col">Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -45,14 +46,37 @@
     </tbody>
 </table>
 
+
+@if (TempData["SuccessMessage"] != null || TempData["DeleteMessage"] != null || TempData["ErrorMessage"] != null)
+{
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Check for and display any TempData messages
+            var successMessage = '@TempData["SuccessMessage"]';
+            var deleteMessage = '@TempData["DeleteMessage"]';
+            var errorMessage = '@TempData["ErrorMessage"]';
+
+            if (successMessage) {
+                alert(successMessage);
+            }
+            if (deleteMessage) {
+                alert(deleteMessage);
+            }
+            if (errorMessage) {
+                alert(errorMessage);
+            }
+        });
+    </script>
+}
+
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         var rows = document.querySelectorAll(".stock-row");
 
         rows.forEach(function (row) {
-            var stockValue = parseInt(row.getAttribute("data-stock"));
+            var stockValue = parseInt(row.getAttribute("data-stock"), 10);
 
-            if (stockValue < 5) {
+            if (!isNaN(stockValue) && stockValue < 5) {
                 row.classList.add("low-stock");
             }
         });

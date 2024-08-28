@@ -12,7 +12,8 @@
     </div>
     <div class="mb-3">
         <label for="" class="form-label">Quantity</label>
-        <input type="number" class="form-control" asp-for="Quantity">
+        <input type="number" class="form-control" asp-for="Quantity" step="1" required min="1">
+        <span asp-validation-for="Quantity" class="text-danger"></span>
     </div>
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>

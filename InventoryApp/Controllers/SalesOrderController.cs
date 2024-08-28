@@ -68,7 +68,7 @@ namespace InventoryApp.Controllers
         public async Task<IActionResult> Add(AddSalesOrderViewModel salesOrderViewModel)
         {
             var InventoryItem = await inventoryAppDbContext.Inventories.FindAsync(salesOrderViewModel.ItemId);
-            if(InventoryItem.StockQuantity >= salesOrderViewModel.Quantity)
+            if(InventoryItem is not null && (InventoryItem.StockQuantity >= salesOrderViewModel.Quantity))
             {
                 var saleOrder = new SalesOrder()
                 {
@@ -85,10 +85,13 @@ namespace InventoryApp.Controllers
 
                 await inventoryAppDbContext.SaveChangesAsync();
 
+                TempData["SuccessMessage"] = "Sales order added successfully.";
+
             }
             else
             {
-                return View("Error", new ErrorViewModel() { ControllerName = "SalesOrderController", ActionName = "Add", ErrorMessage = "Stock is low for this item,first update stock." });
+                ModelState.AddModelError("Quantity", $"Stock for this item is {InventoryItem?.StockQuantity}, enter a lower number.");
+                return View(salesOrderViewModel);
             }
             
 
